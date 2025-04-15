@@ -1,0 +1,204 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                Int             @id @default(autoincrement())
+  fullName          String?
+  userName          String?         @unique
+  countryCode       String?
+  phoneNo           String?         @unique
+  isPhoneNoVerified Boolean         @default(false)
+  email             String?         @unique
+  isEmailVerified   Boolean         @default(false)
+  verificationCode  String? 
+  dob               DateTime?
+  gender            Int?
+  password          String?
+  role              Int             @default(1)
+  registeredOn      DateTime        @default(now())
+  updatedOn         DateTime        @updatedAt
+  isBanned          Boolean?        @default(false)
+  bannedById        Int?
+  bannedReason      String?
+  isTempDeleted     Boolean         @default(false)
+  interests         InterestTopic[]
+  likes             Like[]
+  comments          Comment[]
+  enrollments       Enrollment[]
+  reviews           Review[]
+
+  @@index([userName])
+  @@index([email])
+  @@index([phoneNo])
+}
+
+model Question {
+  id              Int      @id @default(autoincrement())
+  title           String
+  correctOptionId String
+  option1         String
+  option2         String
+  option3         String
+  option4         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model InterestTopic {
+  id      Int  @id @default(autoincrement())
+  userId  Int
+  topicId Int
+  user    User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, topicId])
+}
+
+model Topic {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  topicImage String?
+  imageKey   String?
+  article    Article[]
+  quiz       Quiz[]
+}
+
+model Quiz {
+  id              Int      @id @default(autoincrement())
+  title           String
+  correctOptionId String
+  option1         String
+  option2         String
+  option3         String
+  option4         String
+  duration        Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  topicId         Int
+  topic           Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+}
+
+model Article {
+  id        Int       @id @default(autoincrement())
+  title     String
+  content   String
+  topicId   Int
+  imageUrl  String?
+  key       String?
+  tag       String
+  createdAt DateTime  @default(now())
+  topic     Topic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  likes     Like[]
+  comments  Comment[]
+
+  @@index([topicId])
+}
+
+model Like {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  articleId Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, articleId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  articleId Int
+  content   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+}
+
+model CourseCategory {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  courses   Course[]
+}
+
+model Course {
+  id           String         @id @default(uuid())
+  title        String
+  description  String?
+  thumbnail    String
+  thumbnailKey String?
+  price        Int
+  durationTime String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  categoryId   String
+  category     CourseCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  enrollments  Enrollment[]
+  reviews      Review[]
+  sections     Section[]
+
+  @@index([categoryId])
+}
+
+model Section {
+  id           String       @id @default(uuid())
+  title        String
+  courseId     String
+  durationTime String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  course       Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  subsections  SubSection[]
+}
+
+model SubSection {
+  id           String   @id @default(uuid())
+  title        String
+  videoUrl     String
+  videoKey     String?
+  durationTime String?
+  sectionId    String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  section      Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+}
+
+model Enrollment {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  courseId  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  reviews   Review[]
+
+  @@unique([userId, courseId])
+}
+
+model Review {
+  id         Int        @id @default(autoincrement())
+  rating     Int        @default(0) // Rating out of 5
+  review     String?
+  userId     Int
+  courseId   String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrollment Enrollment @relation(fields: [userId, courseId], references: [userId, courseId], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}

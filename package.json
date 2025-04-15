@@ -1,0 +1,58 @@
+{
+  "name": "info",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.20.4"
+  },
+  "scripts": {
+    "start": "node build/app.js",
+    "build": "npm i && tsc",
+    "watch": "tsc -w",
+    "dev": "nodemon --exec ts-node src/app.ts",
+    "studio": "npx prisma studio --schema=./src/prisma/schema.prisma",
+    "generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
+    "migrate": "npx prisma migrate dev --schema=./src/prisma/schema.prisma --name",
+    "render-build": "npm install && npm run generate && npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.614.0",
+    "@aws-sdk/s3-request-presigner": "^3.614.0",
+    "@prisma/client": "^5.20.0",
+    "@types/multer": "^1.4.12",
+    "@types/uuid": "^10.0.0",
+    "aws-sdk": "^2.1659.0",
+    "axios": "^1.7.2",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-unless": "^2.1.3",
+    "firebase-admin": "^13.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.2",
+    "nodemailer": "^6.10.0",
+    "pg": "^8.14.1",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.14.8",
+    "@types/nodemailer": "^6.4.17",
+    "@types/pg": "^8.11.11",
+    "nodemon": "^3.1.4",
+    "prisma": "^5.20.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
+  }
+}
