@@ -8,15 +8,15 @@
     "node": ">=18.20.4"
   },
   "scripts": {
-    "start": "node build/app.js",
-    "build": "npm i && tsc",
-    "watch": "tsc -w",
-    "dev": "nodemon --exec ts-node src/app.ts",
-    "studio": "npx prisma studio --schema=./src/prisma/schema.prisma",
-    "generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
-    "migrate": "npx prisma migrate dev --schema=./src/prisma/schema.prisma --name",
-    "render-build": "npm install && npm run generate && npm run build"
-  },
+  "start": "node build/app.js",
+  "build": "tsc",
+  "watch": "tsc -w",
+  "dev": "nodemon --exec ts-node src/app.ts",
+  "studio": "npx prisma studio --schema=./src/prisma/schema.prisma",
+  "generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
+  "migrate": "npx prisma migrate dev --schema=./src/prisma/schema.prisma --name",
+  "render-build": "npm run generate && npm run build"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
