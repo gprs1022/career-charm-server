@@ -1,0 +1,9 @@
+# Node modules directory
+node_modules/
+
+# Environment variables
+.env
+
+# Build directory
+build/
+serviceAccountKey.json
