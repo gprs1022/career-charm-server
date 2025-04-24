@@ -52,6 +52,7 @@ app.get("/test-db", async (_req, res) => {
       timestamp: result.rows[0].now 
     });
   } catch (error) {
+    console.log("database is not running")
     console.error('Database connection error details:', {
       message: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined,
